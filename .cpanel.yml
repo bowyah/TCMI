@@ -3,7 +3,7 @@ deployment:
   tasks:
     # Set the deploy path to your cPanel public_html/TCMI folder.
     # Replace "cpaneluser" with your actual cPanel username.
-    - export DEPLOYPATH=/home/cpaneluser/public_html/
+    - export DEPLOYPATH=/home/tcmioxci/public_html
 
     # Sync all files except sensitive/dev-only items
     - /bin/rsync -avz
