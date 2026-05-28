@@ -1,6 +1,5 @@
 # Dependencies
 node_modules/
-api/vendor/
 
 # Environment — NEVER commit real credentials
 .env
