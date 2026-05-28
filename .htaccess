@@ -1,20 +1,13 @@
-DirectoryIndex index.html
 Options -Indexes
+DirectoryIndex index.php index.html
 
 RewriteEngine On
 
 # Force HTTPS
 RewriteCond %{HTTPS} off
-RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
 
-# SPA fallback — serve index.html for all non-file, non-API paths
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_URI} !^/api/
-RewriteRule ^ index.html [L]
-
-# Block .env and composer files from web access
-<FilesMatch "(\.env|composer\.json|composer\.lock)$">
-    Order Allow,Deny
+# Block .env and config files
+<FilesMatch "(\.env|composer\.json|composer\.lock|config\.php)$">
     Deny from all
 </FilesMatch>
