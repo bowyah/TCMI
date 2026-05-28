@@ -1,10 +1,23 @@
+# Dependencies
 node_modules/
+api/vendor/
+
+# Environment — NEVER commit real credentials
 .env
+
+# Databases
 db/*.sqlite
 db/*.sqlite-wal
 db/*.sqlite-shm
-*.log
-.DS_Store
-/plans
 
+# Logs
+*.log
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Dev-only folders
+/plans
 /backend_file
