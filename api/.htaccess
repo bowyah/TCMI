@@ -1,20 +1,28 @@
 RewriteEngine On
 
-# Handle preflight OPTIONS requests
+# ── Pass Authorization header through FastCGI ─────────────────────────
+RewriteCond %{HTTP:Authorization} ^(.*)
+RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
+
+# ── Serve config.js from config.js.php (outputs JS with correct MIME) ─
+RewriteRule ^config\.js$ config.js.php [L]
+
+# ── Handle preflight OPTIONS requests ────────────────────────────────
 RewriteCond %{REQUEST_METHOD} OPTIONS
 RewriteRule ^(.*)$ index.php [QSA,L]
 
-# Don't rewrite actual files/directories
+# ── Route all other requests to index.php ────────────────────────────
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-
-# Route everything to index.php
 RewriteRule ^(.*)$ index.php [QSA,L]
 
-# Protect config file
-<Files "config.php">
+# ── Security: block direct access to sensitive files ──────────────────
+<FilesMatch "(config\.php|config\.js\.php|\.env)$">
     Order Allow,Deny
     Deny from all
-</Files>
-RewriteCond %{HTTP:Authorization} ^(.*)
-RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
+</FilesMatch>
+
+# Block access to vendor directory
+<IfModule mod_rewrite.c>
+    RewriteRule ^vendor/ - [F,L]
+</IfModule>

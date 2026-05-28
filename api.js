@@ -7,11 +7,16 @@
 // Debug: confirm api.js is loaded
 if (typeof window !== 'undefined' && window.console) console.log('api.js loaded (compat shims active)');
 
-// ── CONFIGURE THIS ──────────────────────────────────────────────────
-// Change this to your actual backend URL after deploying to cPanel
-// Example: 'https://tcmi.org' or 'https://tcmi.org/api'
-const API_BASE = 'http://localhost/TCMI/api';
+// ── API BASE (reads from .env via api/config.js) ────────────────────
+// api/config.js.php injects window.TCMI_CONFIG from the server .env.
+// Fallback: auto-detect from the page URL so local dev still works
+// even without the config script tag.
+const API_BASE = (
+  (window.TCMI_CONFIG && window.TCMI_CONFIG.apiBase) ||
+  (window.location.origin + window.location.pathname.replace(/\/[^/]*$/, '') + '/api')
+).replace(/\/+$/, '');
 // ────────────────────────────────────────────────────────────────────
+
 
 // Token management
 const token = {
