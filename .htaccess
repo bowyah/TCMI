@@ -1,48 +1,20 @@
-# ─────────────────────────────────────────────────────────────────────
-#  TCMI — Root .htaccess
-#  Production domain: https://tcminitiative.org/
-# ─────────────────────────────────────────────────────────────────────
-
-# ── 1. Serve index.html as default document ──────────────────────────
 DirectoryIndex index.html
-
-# ── 2. Disable directory listing ─────────────────────────────────────
 Options -Indexes
 
-# ── 3. Enable mod_rewrite ────────────────────────────────────────────
 RewriteEngine On
 
-# ── 4. Force HTTPS ───────────────────────────────────────────────────
+# Force HTTPS
 RewriteCond %{HTTPS} off
 RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
 
-# ── 5. Serve index.html for any unknown path (SPA fallback) ──────────
-#  Passes real files/dirs through; catches everything else → index.html
+# SPA fallback — serve index.html for all non-file, non-API paths
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_URI} !^/api/
 RewriteRule ^ index.html [L]
 
-# ── 6. Protect sensitive files ───────────────────────────────────────
+# Block .env and composer files from web access
 <FilesMatch "(\.env|composer\.json|composer\.lock)$">
     Order Allow,Deny
     Deny from all
 </FilesMatch>
-
-# ── 7. Cache static assets ───────────────────────────────────────────
-<IfModule mod_expires.c>
-    ExpiresActive On
-    ExpiresByType text/css              "access plus 7 days"
-    ExpiresByType application/javascript "access plus 7 days"
-    ExpiresByType image/png             "access plus 30 days"
-    ExpiresByType image/jpeg            "access plus 30 days"
-    ExpiresByType image/gif             "access plus 30 days"
-    ExpiresByType image/webp            "access plus 30 days"
-</IfModule>
-
-# ── 8. Security headers ───────────────────────────────────────────────
-<IfModule mod_headers.c>
-    Header always set X-Content-Type-Options "nosniff"
-    Header always set X-Frame-Options "SAMEORIGIN"
-    Header always set Referrer-Policy "strict-origin-when-cross-origin"
-</IfModule>
