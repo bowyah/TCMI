@@ -1,0 +1,19 @@
+---
+deployment:
+  tasks:
+    # Set the deploy path to your cPanel public_html/TCMI folder.
+    # Replace "cpaneluser" with your actual cPanel username.
+    - export DEPLOYPATH=/home/cpaneluser/public_html/
+
+    # Sync all files except sensitive/dev-only items
+    - /bin/rsync -avz
+        --exclude='.git'
+        --exclude='.github'
+        --exclude='plans/'
+        --exclude='backend_file/'
+        --exclude='*.log'
+        --exclude='*.sqlite'
+        --exclude='*.sqlite-wal'
+        --exclude='*.sqlite-shm'
+        --exclude='.env'
+        ./ $DEPLOYPATH

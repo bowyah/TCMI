@@ -1,0 +1,45 @@
+name: Deploy TCMI to cPanel
+
+on:
+  push:
+    branches:
+      - main        # triggers on every push to main
+
+jobs:
+  deploy:
+    name: Push to cPanel via FTP
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── 1. Check out the repository ──────────────────────────────────
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0          # full history so rsync can diff
+
+      # ── 2. Deploy to cPanel public_html via FTP-Deploy-Action ────────
+      #   Secrets to add in GitHub → Settings → Secrets & variables → Actions:
+      #     FTP_SERVER   → your cPanel host, e.g. ftp.yourdomain.com
+      #     FTP_USERNAME → your cPanel FTP username  (cpaneluser@yourdomain.com)
+      #     FTP_PASSWORD → your cPanel FTP password
+      - name: FTP Deploy to public_html/TCMI
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server:           ${{ secrets.FTP_SERVER }}
+          username:         ${{ secrets.FTP_USERNAME }}
+          password:         ${{ secrets.FTP_PASSWORD }}
+          local-dir:        ./              # root of this repo
+          server-dir:       public_html/TCMI/   # destination on cPanel
+          protocol:         ftp             # change to ftps if host supports it
+          port:             21
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            **/plans/**
+            **/backend_file/**
+            **/*.log
+            **/*.sqlite
+            **/*.sqlite-wal
+            **/*.sqlite-shm
+            .env
