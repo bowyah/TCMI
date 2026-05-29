@@ -375,18 +375,33 @@ try {
     // Team members
     if ($db->query('SELECT COUNT(*) FROM team')->fetchColumn() == 0) {
         $team = [
-            ['Pastor David Osei', 'Founder & Director', 'DO', '61491319153', 'https://www.facebook.com/share/1D6etEV5e1/'],
-            ['Mrs. Anna K. Page', 'Co-Founder', 'AP', '61491319154', 'https://www.facebook.com/share/1D6etEV5e1/'],
-            ['Grace Mensah', 'Programme Coordinator', 'GM', null, null],
-            ['Elder James Boateng', 'Mentor Lead', 'JB', null, null],
-            ['Sister Rachel Adu', 'Youth Outreach Lead', 'RA', null, null],
+            ['Pastor David Osei', 'Founder & Director', 'DO', '61491319153', 'https://www.facebook.com/share/1D6etEV5e1/', 'api/uploads/teams/Pastor_David_Osei.jfif', 'Pst. Yormie Page is the visionary Founder and President of The Cornerstone Initiative. Driven by a deep passion for youth transformation and the Gospel of Jesus Christ, he established TCMI to raise up a generation rooted in faith, purpose, and godly character.', 'We are not just building programmes — we are building people. And people built on the Cornerstone of Christ will stand through any storm.', ['Pastor','Founder','Mentor','Leader']],
+            ['Mrs. Anna K. Page', 'Co-Founder', 'AP', '61491319154', 'https://www.facebook.com/share/1D6etEV5e1/', 'api/uploads/teams/Mrs_Anna_K_Page.jfif', 'Mrs. Anna K. Page is the Co-Founder of The Cornerstone Initiative and a passionate advocate for youth, family, and community transformation. As a devoted mother and trained counsellor, she brings compassion and wisdom to everything TCMI does.', 'Every young person needs someone in their corner who believes in them unconditionally — that is what we are here to be.', ['Co-Founder','Counsellor','Mother','Community Leader']],
+            ['Grace Mensah', 'Programme Coordinator', 'GM', null, null, null, 'Grace Mensah serves as the Programme Coordinator for TCMI, overseeing the planning and execution of all mentorship programmes and events. Her organisational skills and heart for people make her an invaluable part of the team.', 'Every detail matters when we are serving God’s people.', ['Coordinator','Administrator','Mentor']],
+            ['Elder James Boateng', 'Mentor Lead', 'JB', null, null, null, 'Elder James Boateng leads the mentorship training division at TCMI, equipping mentors with practical tools and biblical principles to effectively disciple the next generation. His decades of pastoral experience bring depth and wisdom to the programme.', 'A mentor is simply someone who walks ahead and refuses to leave you behind.', ['Elder','Trainer','Mentor','Pastor']],
+            ['Sister Rachel Adu', 'Youth Outreach Lead', 'RA', null, null, null, 'Sister Rachel Adu heads the youth outreach arm of TCMI, connecting with young people in churches, schools, and communities. Her energy, creativity, and genuine love for youth make her a natural bridge between TCMI and the next generation.', 'If we reach them where they are, we can walk them to where God wants them to be.', ['Outreach','Youth','Evangelist']],
+            ['Elijah N. Bowyah Jr', 'Head of Tech & Media', 'EB', '18572868405', 'https://www.facebook.com/liberiarising231', 'api/uploads/teams/Elijah_N_Bowyah_Jr.jfif', 'Elijah N. Bowyah Jr serves as the Head of Technology and Media at TCMI, overseeing the digital infrastructure, platform development, and media strategy of the organisation. His technical expertise and creative vision drive TCMI’s digital presence and online reach.', 'Technology is just a tool — the real power is the message it carries.', ['Tech','Media','Developer','Designer']],
         ];
         $i = 0;
         foreach ($team as $t) {
-            $db->prepare('INSERT INTO team (id,name,role,initials,whatsapp,facebook,sort_order) VALUES (?,?,?,?,?,?,?)')
-               ->execute([uuid4(), $t[0], $t[1], $t[2], $t[3], $t[4], $i++]);
+            $db->prepare('INSERT INTO team (id,name,role,initials,whatsapp,facebook,sort_order,pic_url,bio,quote,tags) VALUES (?,?,?,?,?,?,?,?,?,?,?)')
+               ->execute([uuid4(), $t[0], $t[1], $t[2], $t[3], $t[4], $i++, $t[5], $t[6], $t[7], json_encode($t[8])]);
         }
         echo "✅ Team members seeded ({$i})\n";
+    }
+
+    // Gallery
+    if ($db->query('SELECT COUNT(*) FROM gallery')->fetchColumn() == 0) {
+        $gallery = [
+            ['Pastor David Osei speaking at TCMI', 'api/uploads/gallery/Pastor_David_Osei.jfif', 'api/uploads/gallery/Pastor_David_Osei.jfif'],
+            ['Mrs. Anna K. Page with the TCMI family', 'api/uploads/gallery/Mrs_Anna_K_Page.jfif', 'api/uploads/gallery/Mrs_Anna_K_Page.jfif'],
+            ['Elijah N. Bowyah Jr leading media & tech', 'api/uploads/gallery/Elijah_N_Bowyah_Jr.jfif', 'api/uploads/gallery/Elijah_N_Bowyah_Jr.jfif'],
+        ];
+        foreach ($gallery as $g) {
+            $db->prepare('INSERT INTO gallery (id,caption,file_path,file_url) VALUES (?,?,?,?)')
+               ->execute([uuid4(), $g[0], $g[1], $g[2]]);
+        }
+        echo "✅ Gallery seeded (3)\n";
     }
 
     // Co-founder
@@ -427,13 +442,13 @@ try {
     // Testimonials
     if ($db->query('SELECT COUNT(*) FROM testimonials')->fetchColumn() == 0) {
         $testimonials = [
-            ['TCMI changed my life. I found purpose, community, and a deeper walk with God.', 'Ama Asante', 'Student, Youth Track'],
-            ['The mentoring I received has equipped me to lead with compassion and integrity.', 'Kwame Darko', 'Student, Mentor Track'],
-            ['This programme is a blessing to our community. It raises leaders who serve.', 'Pastor David Osei', 'Founder & Director'],
+            ['TCMI has been an extraordinary journey of faith, purpose, and growth. Building this initiative has shown me that when God places a vision in your heart and you commit to it with everything, He brings the right people and the right moments to make it a reality. To every young person reading this — you are destined for more.', 'Pst. Yormie Page', 'Founder & Director, TCMI', 'api/uploads/testimonials/Pastor_David_Osei.jfif'],
+            ['Watching young people discover who God has called them to be through TCMI fills my heart with unspeakable joy. This is more than a programme — it is a family. Every young life transformed is a testimony of what happens when a community chooses to love intentionally.', 'Mrs. Anna K. Page', 'Co-Founder & Counsellor, TCMI', 'api/uploads/testimonials/Mrs_Anna_K_Page.jfif'],
+            ['Being part of the TCMI team as Head of Technology and Media has been one of the most rewarding chapters of my life. Technology is just a vessel — the real power is the message of transformation that TCMI carries. I am proud to use my skills to amplify that message to the world.', 'Elijah N. Bowyah Jr', 'Head of Tech & Media, TCMI', 'api/uploads/testimonials/Elijah_N_Bowyah_Jr.jfif'],
         ];
         foreach ($testimonials as $t) {
-            $db->prepare('INSERT INTO testimonials (id,quote,name,role) VALUES (?,?,?,?)')
-               ->execute([uuid4(), $t[0], $t[1], $t[2]]);
+            $db->prepare('INSERT INTO testimonials (id,quote,name,role,pic_url) VALUES (?,?,?,?,?)')
+               ->execute([uuid4(), $t[0], $t[1], $t[2], $t[3]]);
         }
         echo "✅ Testimonials seeded (3)\n";
     }
@@ -455,11 +470,17 @@ try {
 
     // Sponsors
     if ($db->query('SELECT COUNT(*) FROM sponsors')->fetchColumn() == 0) {
-        $sponsors = ['Grace Church Brisbane', 'Calvary Chapel Sydney', 'Faith Foundation Ghana', 'Kingdom Builders International'];
-        foreach ($sponsors as $s) {
-            $db->prepare('INSERT INTO sponsors (id,name) VALUES (?,?)')->execute([uuid4(), $s]);
+        $sponsors = [
+            ['sp1', 'The Nella Foundation', 'api/uploads/sponsors/The_Nella_Foundation.png'],
+            ['sp2', 'Bowyah University', null],
+            ['sp3', 'Yormie Global', null],
+            ['sp4', 'Grace Community Church', null],
+            ['sp5', 'Kingdom Leaders Network', null],
+        ];
+        foreach ($sponsors as $sp) {
+            $db->prepare('INSERT INTO sponsors (id,name,logo_url) VALUES (?,?,?)')->execute([$sp[0], $sp[1], $sp[2]]);
         }
-        echo "✅ Sponsors seeded (4)\n";
+        echo "✅ Sponsors seeded (5)\n";
     }
 
     // Settings

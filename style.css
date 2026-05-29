@@ -623,58 +623,7 @@ body{overflow-x:hidden}
       }
       .testi-quote-text {
         font-size:14px;
-        color:rgba(255,255,255,.78);
-        line-height:1.78;
-        font-style:italic;
-        flex:1;
-        margin-bottom:22px;
-      }
-      .testi-author-row {
-        display:flex;
-        align-items:center;
-        gap:13px;
-        border-top:1px solid rgba(201,168,76,.15);
-        padding-top:16px;
-      }
-      .testi-avatar {
-        width:52px;height:52px;border-radius:50%;
-        overflow:hidden;border:2px solid var(--gold);
-        flex-shrink:0;
-      }
-      .testi-avatar img { width:100%;height:100%;object-fit:cover;object-position:center top; }
-      .testi-avatar-init {
-#testimonials-track { animation: testiSlide 30s linear infinite; }
-      #testimonials-track:hover { animation-play-state: paused; }
-      @keyframes testiSlide {
-        0%   { transform: translateX(0); }
-        100% { transform: translateX(-50%); }
-      }
-      .testi-card { cursor:pointer;
-        flex-shrink:0;
-        width:340px;
-        background:rgba(255,255,255,.06);
-        border:1px solid rgba(201,168,76,.2);
-        border-radius:16px;
-        padding:28px 24px;
-        display:flex;
-        flex-direction:column;
-        justify-content:space-between;
-        transition:background .3s,border-color .3s;
-      }
-      .testi-card:hover {
-        background:rgba(201,168,76,.1);
-        border-color:rgba(201,168,76,.5);
-      }
-      .testi-open-quote {
-        font-size:56px;
-        color:rgba(201,168,76,.35);
-        font-family:Georgia,serif;
-        line-height:.8;
-        margin-bottom:10px;
-      }
-      .testi-quote-text {
-        font-size:14px;
-        color:rgba(255,255,255,.78);
+        color:#fff;
         line-height:1.78;
         font-style:italic;
         flex:1;
@@ -699,4 +648,4 @@ body{overflow-x:hidden}
         font-family:var(--font-serif);font-weight:700;font-size:20px;color:var(--navy);flex-shrink:0;
       }
       .testi-name  { font-size:14px;font-weight:700;color:#fff; }
-      .testi-role  { font-size:11px;color:rgba(255,255,255,.45);margin-top:3px; }
+      .testi-role  { font-size:11px;color:rgba(255,255,255,.65);margin-top:3px; }

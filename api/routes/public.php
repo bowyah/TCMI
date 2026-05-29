@@ -16,6 +16,7 @@ function handlePublic(string $method, string $path, array $segments): bool {
         $rows = $db->query('SELECT * FROM team ORDER BY sort_order ASC')->fetchAll();
         foreach ($rows as &$r) {
             $r['tags'] = $r['tags'] ? json_decode($r['tags'], true) : [];
+            $r['pic'] = $r['pic_url'] ?? '';
         }
         json_response($rows);
         return true;

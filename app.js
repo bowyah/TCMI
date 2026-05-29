@@ -34,12 +34,12 @@ window.refreshDB = async function () {
       api.public.getSponsors().catch(() => []),
       api.public.getBooks().catch(() => [])
     ]);
-    window.DB.team = team || [];
+    window.DB.team = (team || []).map(x => ({ ...x, pic: x.pic || x.pic_url || '' }));
     window.DB.cofounder = cofounder || {};
     window.DB.courses = courses || [];
     window.DB.events = events || [];
-    window.DB.gallery = gallery || [];
-    window.DB.testimonials = testimonials || [];
+    window.DB.gallery = (gallery || []).map(x => ({ ...x, src: x.src || x.file_url || x.file_path || '' }));
+    window.DB.testimonials = (testimonials || []).map(x => ({ ...x, pic: x.pic || x.pic_url || '' }));
     window.DB.sponsors = sponsors || [];
     window.DB.books = books || [];
   } catch (e) { console.error('DB Refresh Error:', e); }
@@ -52,6 +52,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderLandingTeam();
   renderTestimonials();
   renderSponsorsSlider();
+  renderGallery();
   if (!hasSession) {
     switchView('view-landing');
   }
@@ -159,7 +160,7 @@ function renderLandingTeam() {
     });
 
     card.addEventListener('click', function () {
-      openTeamProfile(i);
+      openTeamProfile(m.id);
     });
 
     g.appendChild(card);
@@ -1994,6 +1995,7 @@ async function openTeamProfile(id) {
     teamData = await window.TCMI_API.api('GET', '/api/team');
   } catch (e) { console.error(e); }
 
+  teamData = teamData.map(x => ({ ...x, pic: x.pic || x.pic_url || '' }));
   const m = teamData.find(x => String(x.id) === String(id));
   if (!m) return;
 
@@ -2003,12 +2005,21 @@ async function openTeamProfile(id) {
   if (navLogo && mainLogo) navLogo.src = mainLogo.src;
 
   // Photo
-  const noPhotoHTML = `<div style="width:100%;height:100%;background:var(--navy);display:flex;align-items:center;justify-content:center;font-family:var(--font-serif);font-size:52px;color:var(--gold-light);font-weight:700">${m.initials}</div>`;
-  document.getElementById('tp-photo').src = m.pic || '';
-  document.getElementById('tp-photo').style.display = m.pic ? 'block' : 'none';
-  if (!m.pic) document.getElementById('tp-photo').insertAdjacentHTML('beforebegin', noPhotoHTML);
-  document.getElementById('tp-card-photo').src = m.pic || '';
-  document.getElementById('tp-card-photo').style.display = m.pic ? 'block' : 'none';
+  const photoEl = document.getElementById('tp-photo');
+  const oldPlaceholder = document.getElementById('tp-photo-placeholder');
+  if (oldPlaceholder) oldPlaceholder.remove();
+  const photoUrl = m.pic || m.pic_url || '';
+  photoEl.src = photoUrl;
+  photoEl.style.display = photoUrl ? 'block' : 'none';
+  if (!photoUrl) {
+    const placeholder = document.createElement('div');
+    placeholder.id = 'tp-photo-placeholder';
+    placeholder.style.cssText = 'width:100%;height:100%;background:var(--navy);display:flex;align-items:center;justify-content:center;font-family:var(--font-serif);font-size:52px;color:var(--gold-light);font-weight:700';
+    placeholder.textContent = m.initials || (m.name || '').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+    photoEl.parentNode.insertBefore(placeholder, photoEl);
+  }
+  document.getElementById('tp-card-photo').src = photoUrl;
+  document.getElementById('tp-card-photo').style.display = photoUrl ? 'block' : 'none';
 
   // Text
   document.getElementById('tp-name').textContent = m.name;
@@ -2321,7 +2332,7 @@ async function renderSponsorsSlider() {
     track.style.animation = 'none';
     return;
   }
-  const cards = data.map(s => `<div class="sponsor-card">` + (s.logo ? `<img src="${s.logo}">` : `<div style="font-weight:700;color:var(--navy);font-family:var(--font-serif);font-size:20px">${s.name}</div>`) + `</div>`).join('');
+  const cards = data.map(s => `<div class="sponsor-card">` + (s.logo_url ? `<img src="${s.logo_url}" class="sponsor-logo">` : `<div class="sponsor-logo-placeholder">${s.name}</div>`) + `<div class="sponsor-name">${s.name}</div></div>`).join('');
   track.innerHTML = cards + cards;
   track.style.animation = 'sponsorSlide ' + Math.max(10, data.length * 4) + 's linear infinite';
 }
@@ -2331,7 +2342,7 @@ async function renderAdminSponsors() {
   let data = [];
   try { data = await window.TCMI_API.public.getSponsors(); } catch (e) { }
   el.innerHTML = data.length ? data.map(s => `<tr>
-    <td>${s.logo ? `<img src="${s.logo}" style="height:36px;object-fit:contain;border-radius:4px">` : '<span style="font-size:20px"></span>'}</td>
+    <td>${s.logo_url ? `<img src="${s.logo_url}" style="height:36px;object-fit:contain;border-radius:4px">` : '<span style="font-size:20px"></span>'}</td>
     <td><strong>${s.name}</strong></td>
     <td><button class="btn-sm btn-danger" style="font-size:11px" onclick="deleteSponsor('${s.id}')">Remove</button></td>
   </tr>`).join('') : '<tr><td colspan="3" style="text-align:center;color:var(--slate);padding:20px">No sponsors added.</td></tr>';

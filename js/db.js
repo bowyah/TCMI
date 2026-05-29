@@ -20,12 +20,12 @@ window.refreshDB = async function () {
       api.public.getSponsors().catch(() => []),
       api.public.getBooks().catch(() => [])
     ]);
-    window.DB.team = team || [];
+    window.DB.team = (team || []).map(x => ({ ...x, pic: x.pic || x.pic_url || '' }));
     window.DB.cofounder = cofounder || {};
     window.DB.courses = courses || [];
     window.DB.events = events || [];
-    window.DB.gallery = gallery || [];
-    window.DB.testimonials = testimonials || [];
+    window.DB.gallery = (gallery || []).map(x => ({ ...x, src: x.src || x.file_url || x.file_path || '' }));
+    window.DB.testimonials = (testimonials || []).map(x => ({ ...x, pic: x.pic || x.pic_url || '' }));
     window.DB.sponsors = sponsors || [];
     window.DB.books = books || [];
   } catch (e) { console.error('DB Refresh Error:', e); }
